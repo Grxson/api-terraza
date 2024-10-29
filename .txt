@@ -1,0 +1,22 @@
+---- Estructura de Temperature ----
+{
+  "_id": 128,
+  "temperature": 24.3,
+  "created_at": "2024-08-15 11:37:06",
+  "updated_at": "2024-08-15 11:37:06"
+}
+
+
+
+---- Estructura de Customers ----
+`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) NOT NULL,
+  `apellidoP` varchar(50) DEFAULT NULL,
+  `apellidoM` varchar(15) DEFAULT NULL,
+  `correo` varchar(50) NOT NULL,
+  `pass` varchar(30) DEFAULT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
