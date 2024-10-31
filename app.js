@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
+import cors from 'cors'
 import products from "./routes/productsRoutes.js"; // Importa las rutas
 import orders from "./routes/ordersRoutes.js"; // Importa las rutas
 import orderDetails from "./routes/orderDetailsRoutes.js"; // Importa las rutas
@@ -10,10 +11,16 @@ import customers from "./routes/customersRoutes.js";
 
 dotenv.config();
 
+
 const app = express();
 
 // Middleware para manejar JSON correctamente
 app.use(express.json());
+// Habilitar CORS con configuración
+app.use(cors({
+  origin: 'http://localhost:3000', // Permitir solo solicitudes desde este origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+}));
 
 mongoose
   .connect(process.env.MONGO_URI)

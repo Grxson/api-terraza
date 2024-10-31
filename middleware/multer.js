@@ -1,6 +1,8 @@
 import multer from "multer";
 import path from "path";
+import dotenv from 'dotenv'
 
+dotenv.config()
 // Configuración de almacenamiento con multer
 const storage = multer.diskStorage({
     destination: (req, res, cb) => {
