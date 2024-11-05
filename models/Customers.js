@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
 
 const customersSchema = new mongoose.Schema({
-    _id: { type: Number, require: true },
+    // _id: { type: Number, require: true },
     nombre: { type: String, require: true },
     apellidoP: { type: String, require: true },
     apellidoM: { type: String, require: true },
     correo: { type: String, require: true, unique: true },
     pass: { type: String, require: true },
     token: { type: String },
-    confirmado: { type: Boolean },
-    google_id: { type: String, require: true },
-    imagen: { type: String, require: true },
+    confirmado: { type: Boolean, default: false },
+    google_id: { type: String },
+    imagen: { type: String },
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }, })
 
 const Customers = mongoose.model('Customers', customersSchema, 'customers')
-customersSchema.methods.verificarPassword = function (password) {
+customersSchema.methods.verificarPassword = function (pass) {
     return bcrypt.compareSync(pass, this.pass);
 };
 

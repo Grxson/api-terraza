@@ -13,6 +13,8 @@ import customers from "./routes/customersRoutes.js";
 
 dotenv.config();
 const app = express();
+const csrfProtection = csurf({ cookie: true });
+
 
 // Middleware para manejar JSON correctamente
 app.use(express.json());
@@ -24,11 +26,14 @@ app.use(express.urlencoded({ extended: true }))
 // Habilitar cookie parser
 app.use(cookieParser())
 
-// Habilitar el csurf
-app.use(csurf({ cookie: true }))
+// app.use(csrfProtection);
+
+
+
 app.use(cors({
   origin: 'http://localhost:3000', // Permitir solo solicitudes desde este origen
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  credentials: true
 }));
 
 mongoose
