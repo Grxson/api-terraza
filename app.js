@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
 import cors from 'cors'
+import cookieParser from "cookie-parser";
+import csurf from "csurf";
 import products from "./routes/productsRoutes.js"; // Importa las rutas
 import orders from "./routes/ordersRoutes.js"; // Importa las rutas
 import orderDetails from "./routes/orderDetailsRoutes.js"; // Importa las rutas
@@ -10,13 +12,20 @@ import temperature from "./routes/temperatureRoutes.js";
 import customers from "./routes/customersRoutes.js";
 
 dotenv.config();
-
-
 const app = express();
 
 // Middleware para manejar JSON correctamente
 app.use(express.json());
 // Habilitar CORS con configuración
+
+//Habilitar lectura datos de formularios
+app.use(express.urlencoded({ extended: true }))
+
+// Habilitar cookie parser
+app.use(cookieParser())
+
+// Habilitar el csurf
+app.use(csurf({ cookie: true }))
 app.use(cors({
   origin: 'http://localhost:3000', // Permitir solo solicitudes desde este origen
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
