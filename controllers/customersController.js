@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
 import Customers from "../models/Customers.js";
 import fs from 'fs'
+import { generarJWT } from "../helpers/tokens.js";
 
 // Ruta para obtener el token CSRF
 export const getCsrfToken = (req, res) => {
@@ -14,7 +15,7 @@ const registerCustomer = async (req, res) => {
     // Validar si el cliente existe:
     const existinggCustomer = await Customers.findOne({ correo })
     if (existinggCustomer) {
-        return res.status(400).json({ message: 'El correo ya esta en uso' })
+        return res.status(400).json({ message: 'Ya existe una cuenta con este correo.' })
     }
 
     // Crear un nuevo cliente
@@ -29,10 +30,10 @@ const registerCustomer = async (req, res) => {
 
     try {
         await newCustomer.save();
-        res.status(201).json({ message: 'Cliente registrado exitosamente.' });
+        res.status(201).json({ message: 'Se ha creado tu cuenta con éxito.' });
     } catch (error) {
         console.error(error)
-        res.status(500).json({ message: 'Error al registrar el cliente.', error });
+        res.status(500).json({ message: 'Hubo algún error al registrarte.', error });
     }
 
 }
@@ -57,11 +58,14 @@ const loginCustomer = async (req, res) => {
             return res.status(400).json({ message: 'Credenciales inválidas.' });
         }
 
-        // Aquí puedes generar un token de sesión o JWT si es necesario
-        // Ejemplo: const token = jwt.sign({ id: customer._id }, 'tu_clave_secreta', { expiresIn: '1h' });
+        const token = generarJWT({ id: customer._id, nombre: customer.nombre })
+        console.log(token)
 
-        res.json({ message: 'Inicio de sesión exitoso.', customer });
-        console.log(customer)
+        res.cookie('_token', token, {
+            httpOnly: true
+        })
+        return res.json({ message: 'Inicio de sesión exitoso.', customer });
+
     } catch (error) {
         console.error('Error en el inicio de sesión:', error);
         res.status(500).json({ message: 'Error interno del servidor. Inténtalo de nuevo más tarde.' });
