@@ -11,6 +11,7 @@ const customersSchema = new mongoose.Schema({
     confirmado: { type: Boolean, default: false },
     google_id: { type: String },
     imagen: { type: String },
+    user: { type: String }
 }, {
     timestamps: {
         createdAt: 'created_at',

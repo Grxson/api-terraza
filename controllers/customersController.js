@@ -73,7 +73,28 @@ const loginCustomer = async (req, res) => {
 };
 
 
-const getAllCustomers = async (req, res) => {
+const profileCustomer = async (req, res) => {
+    console.log('Hola')
+    try {
+        const customer = await Customers.findById(req.id)
+        if (!customer) {
+            return res.status(404).json({ message: 'Usuario no encontrado' })
+        }
+        const profileData = {
+            nombre: customer.nombre,
+            apellidoP: customer.apellidoP,
+            apellidoM: customer.apellidoM,
+            correo: customer.correo,
+
+        }
+
+        res.status(200).json({ profileData })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Error al obtener el perfil' })
+    }
+
+
 
 }
 const getCustomerById = async (req, res) => {
@@ -88,7 +109,7 @@ const deleteCustomer = async (req, res) => {
 export {
     loginCustomer,
     registerCustomer,
-    getAllCustomers,
+    profileCustomer,
     getCustomerById,
     updateCustomer,
     deleteCustomer,
