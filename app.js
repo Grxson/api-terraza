@@ -11,6 +11,7 @@ import employeeRoutes from "./routes/employeeRoutes.js";
 import temperature from "./routes/temperatureRoutes.js";
 import customers from "./routes/customersRoutes.js";
 import protegerRuta from "./middleware/protegerRuta.js";
+import { getCuponesDeCliente } from "./controllers/clienteCuponesController.js";
 
 dotenv.config();
 const app = express();
@@ -58,9 +59,13 @@ app.use("/api/customers", customers);
 // Rutas Temperature
 app.use("/api/temperature", temperature);
 
+app.use('/api/cliente-cupons', getCuponesDeCliente)
+
 // app.get('/api/check-session', protegerRuta, (req, res) => {
 //   res.json({ authenticated: true });
 // });
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

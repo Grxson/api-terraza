@@ -62,19 +62,19 @@ const loginCustomer = async (req, res) => {
         console.log(token)
 
         res.cookie('_token', token, {
-            httpOnly: true
+            httpOnly: true,
+            secure: true,
         })
         return res.json({ message: 'Inicio de sesión exitoso.', customer });
 
     } catch (error) {
         console.error('Error en el inicio de sesión:', error);
-        res.status(500).json({ message: 'Error interno del servidor. Inténtalo de nuevo más tarde.' });
+        res.status(500).json({ message: 'Error interno del servidor. Inténtalo de nuevo más tarde.', error: error.message });
     }
 };
 
 
 const profileCustomer = async (req, res) => {
-    console.log('Hola')
     try {
         const customer = await Customers.findById(req.id)
         if (!customer) {

@@ -20,3 +20,19 @@
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
+
+
+
+
+  Modelos
+cupones
+nombre
+descuento
+status
+descripcion
+costoPuntos
+
+cliente_cupon
+cliente_id ref
+cupon_id ref
+status
