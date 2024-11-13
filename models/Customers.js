@@ -8,11 +8,10 @@ const customersSchema = new mongoose.Schema({
     correo: { type: String, require: true, unique: true },
     pass: { type: String, require: true },
     token: { type: String },
-    confirmado: { type: Boolean, default: false },
     google_id: { type: String },
     imagen: { type: String },
-    user: { type: String },
-    puntosAcumulados: { type: String }
+    userIdentifier: { type: String, unique: true, required: true },
+    puntosAcumulados: { type: Number, default: 0 }
 }, {
     timestamps: {
         createdAt: 'created_at',

@@ -13,8 +13,7 @@ const ClienteCuponSchema = new mongoose.Schema({
     },
     status: {
         type: mongoose.Schema.Types.ObjectId,
-        enum: ['canjeado', 'activo', 'expirado'],
-        default: 'activo'
+        default: 'activo' // status a canjeado o activo
     }
 })
 
