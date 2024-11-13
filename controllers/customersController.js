@@ -3,7 +3,8 @@ import bcrypt from 'bcrypt'
 import Customers from "../models/Customers.js";
 import fs from 'fs'
 import { generarJWT } from "../helpers/tokens.js";
-
+import ClienteCupon from "../models/ClienteCupon.js";
+import Cupones from "../models/Cupones.js";
 // Ruta para obtener el token CSRF
 export const getCsrfToken = (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
@@ -86,7 +87,7 @@ const loginCustomer = async (req, res) => {
             return res.status(400).json({ message: 'Credenciales inválidas.' });
         }
 
-        const token = generarJWT({ id: customer._id, nombre: customer.nombre })
+        const token = generarJWT({ id: customer._id, nombre: customer.nombre, userIdentifier: customer.userIdentifier })
         console.log(token)
 
         res.cookie('_token', token, {
@@ -128,9 +129,66 @@ const profileCustomer = async (req, res) => {
 
 
 }
-const getCustomerById = async (req, res) => {
+const canjearCupon = async (req, res) => {
+    const { cliente_id, cupon_id } = req.params;
+    
+    try {
+        // Paso 1: Obtener el cliente usando el 'userIdentifier'
+        const customer = await Customers.findOne({ userIdentifier: cliente_id }); // Buscamos el cliente por userIdentifier
+        if (!customer) {
+            return res.status(404).json({ message: 'Cliente no encontrado.' });
+        }
 
+        if (customer.puntosAcumulados <= 0) {
+            return res.status(400).json({ message: 'El cliente no tiene puntos acumulados.' });
+        }
+
+        // Paso 2: Obtener el cupón por su ID
+        const cupon = await Cupones.findById(cupon_id);
+        if (!cupon) {
+            return res.status(404).json({ message: 'Cupón no encontrado.' });
+        }
+
+        // Paso 3: Verificar si el cliente tiene suficientes puntos para canjear el cupón
+        if (customer.puntosAcumulados < cupon.costoPuntos) {
+            return res.status(400).json({ message: 'No tienes suficientes puntos para canjear este cupón.' });
+        }
+
+        // Paso 4: Crear la relación Cliente-Cupón
+        const nuevoCanje = new ClienteCupon({
+            cliente_id: customer.userIdentifier, // Usamos el userIdentifier del cliente
+            cupon_id: cupon_id // Relacionamos con el cupón
+        });
+        await nuevoCanje.save(); // Guardamos el canje
+
+        // Paso 5: Descontar los puntos del cliente
+        customer.puntosAcumulados -= cupon.costoPuntos;
+        await customer.save(); // Guardamos el cliente con el nuevo total de puntos
+
+        // Paso 6: Cambiar el estado del cupón si es necesario
+        await cupon.save(); // Guardamos el estado actualizado del cupón
+
+        // Paso 7: Responder con éxito
+        res.status(200).json({
+            message: 'Cupón canjeado con éxito.',
+            customer: {
+                id: customer.userIdentifier, // Devolvemos el userIdentifier del cliente
+                nombre: customer.nombre,
+                puntosAcumulados: customer.puntosAcumulados
+            },
+            cupon: {
+                nombre: cupon.nombre,
+                descuento: cupon.descuento,
+                descripcion: cupon.descripcion,
+                status: cupon.status
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al procesar el canje del cupón.', error });
+    }
 }
+
 const updateCustomer = async (req, res) => {
 
 }
@@ -141,7 +199,7 @@ export {
     loginCustomer,
     registerCustomer,
     profileCustomer,
-    getCustomerById,
+    canjearCupon,
     updateCustomer,
     deleteCustomer,
 

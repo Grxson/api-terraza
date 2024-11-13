@@ -1,22 +1,28 @@
-import mongoose from "mongoose";
+import mongoose, { version } from "mongoose";
 
 const ClienteCuponSchema = new mongoose.Schema({
     cliente_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Customers',
         require: true
     },
     cupon_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Cupones',
         require: true
     },
-    status: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: 'activo' // status a canjeado o activo
+    status: { 
+        type: String, 
+        require: true, 
+        enum: ['activo'], 
+        default: 'activo' 
+    },
+   
+},  {
+        versionKey: false
     }
-})
+)
 
-const ClienteCupon = mongoose.model('ClienteCupon', ClienteCuponSchema);
+const ClienteCupon = mongoose.model('customer_coupons', ClienteCuponSchema);
 
 export default ClienteCupon
