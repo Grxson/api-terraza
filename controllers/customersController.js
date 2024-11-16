@@ -190,7 +190,40 @@ const canjearCupon = async (req, res) => {
 }
 
 const updateCustomer = async (req, res) => {
+    const { nombre, apellidoP, apellidoM, correo, pass } = req.body
+    const { id } = req.params
 
+    try {
+        // Buscar al customer por el ID
+        const customer = await Customers.findById(id)
+        if (!customer) {
+            return res.status(400).json({ message: 'Cliente no encontrado' })
+        }
+        // Verificar si el correo ya está en uso por otro cliente (si es que lo están actualizando)
+        if (correo && correo !== customer.correo) {
+            const existingCustomer = await Customers.findOne({ correo })
+            if (existingCustomer) {
+                return res.status(400).json({ message: 'Ya existe una cuenta con este correo.' });
+            }
+        }
+        // Si se proporcionó una nueva contraseña, encriptarla antes de actualizar
+        if (pass) {
+            const hashedPassword = await bcrypt.hash(pass, 10);
+            customer.pass = hashedPassword;
+        }
+        // Actualizar los campos proporcionados
+        if (nombre) customer.nombre = nombre;
+        if (apellidoP) customer.apellidoP = apellidoP;
+        if (apellidoM) customer.apellidoM = apellidoM;
+        if (correo) customer.correo = correo;
+        // Guardar los cambios
+        await customer.save();
+
+        res.status(200).json({ message: 'Datos actualizados correctamente' })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Hubo un error al actualizar los datos del cliente' })
+    }
 }
 const deleteCustomer = async (req, res) => {
 
