@@ -14,8 +14,8 @@ export const getCsrfToken = (req, res) => {
 
 // Generar un identificador único de 4 letras y 4 números
 function generarUserIdentifier() {
-    const letras = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const numeros = Math.floor(1000 + Math.random() * 9000); // Genera un número de 4 dígitos
+    const letras = Math.random().toString(36).substring(2, 5).toUpperCase();
+    const numeros = Math.floor(100 + Math.random() * 900); // Genera un número de 4 dígitos
     return `${letras}${numeros}`;
 }
 
@@ -131,7 +131,7 @@ const profileCustomer = async (req, res) => {
 }
 const canjearCupon = async (req, res) => {
     const { cliente_id, cupon_id } = req.params;
-    
+
     try {
         // Paso 1: Obtener el cliente usando el 'userIdentifier'
         const customer = await Customers.findOne({ userIdentifier: cliente_id }); // Buscamos el cliente por userIdentifier
