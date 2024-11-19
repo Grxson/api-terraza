@@ -131,10 +131,10 @@ const profileCustomer = async (req, res) => {
 }
 const canjearCupon = async (req, res) => {
     const { cliente_id, cupon_id } = req.params;
-
+    
     try {
-        // Paso 1: Obtener el cliente usando el 'userIdentifier'
-        const customer = await Customers.findOne({ userIdentifier: cliente_id }); // Buscamos el cliente por userIdentifier
+        // Paso 1: Obtener el cliente y verificar si tiene puntos suficientes
+        const customer = await Customers.findById(cliente_id); // Buscamos el cliente por ID
         if (!customer) {
             return res.status(404).json({ message: 'Cliente no encontrado.' });
         }
@@ -154,33 +154,31 @@ const canjearCupon = async (req, res) => {
             return res.status(400).json({ message: 'No tienes suficientes puntos para canjear este cupón.' });
         }
 
-        // Paso 4: Crear la relación Cliente-Cupón
-        const nuevoCanje = new ClienteCupon({
-            cliente_id: customer.userIdentifier, // Usamos el userIdentifier del cliente
-            cupon_id: cupon_id // Relacionamos con el cupón
-        });
-        await nuevoCanje.save(); // Guardamos el canje
-
-        // Paso 5: Descontar los puntos del cliente
+        // Paso 4: Descontar los puntos del cliente
         customer.puntosAcumulados -= cupon.costoPuntos;
         await customer.save(); // Guardamos el cliente con el nuevo total de puntos
 
-        // Paso 6: Cambiar el estado del cupón si es necesario
+        // Paso 5: Crear la relación Cliente-Cupón
+        const nuevoCanje = new ClienteCupon({
+            cliente_id: customer.userIdentifier, // Relacionamos con el cliente
+            cupon_id: cupon._id // Relacionamos con el cupón
+        });
+        await nuevoCanje.save(); // Guardamos el canje
+
         await cupon.save(); // Guardamos el estado actualizado del cupón
 
         // Paso 7: Responder con éxito
         res.status(200).json({
             message: 'Cupón canjeado con éxito.',
             customer: {
-                id: customer.userIdentifier, // Devolvemos el userIdentifier del cliente
+                id: customer._id,
                 nombre: customer.nombre,
                 puntosAcumulados: customer.puntosAcumulados
             },
             cupon: {
                 nombre: cupon.nombre,
                 descuento: cupon.descuento,
-                descripcion: cupon.descripcion,
-                status: cupon.status
+                descripcion: cupon.descripcion
             }
         });
 
@@ -188,6 +186,7 @@ const canjearCupon = async (req, res) => {
         res.status(500).json({ message: 'Error al procesar el canje del cupón.', error });
     }
 }
+
 
 const updateCustomer = async (req, res) => {
     const { nombre, apellidoP, apellidoM, correo, pass } = req.body
