@@ -4,7 +4,7 @@ import { canjearCupon } from '../controllers/customersController.js';
 import protegerRuta from '../middleware/protegerRuta.js';
 const router = express.Router()
 
-router.get('/', getCupones);
+router.get('/', protegerRuta, getCupones);
 
 router.post('/canjear/:cliente_id/:cupon_id', canjearCupon);
 

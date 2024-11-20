@@ -169,19 +169,20 @@ const canjearCupon = async (req, res) => {
         await cupon.save(); // Guardamos el estado actualizado del cupón
 
         // Paso 7: Responder con éxito
-        res.status(200).json({
-            message: 'Cupón canjeado con éxito.',
-            customer: {
-                id: customer._id,
-                nombre: customer.nombre,
-                puntosAcumulados: customer.puntosAcumulados
-            },
-            cupon: {
-                nombre: cupon.nombre,
-                descuento: cupon.descuento,
-                descripcion: cupon.descripcion
-            }
-        });
+        res.status(200).json({message: 'Cupón Canjeado con éxito'})
+        // res.status(200).json({
+        //     message: 'Cupón canjeado con éxito.',
+        //     customer: {
+        //         id: customer._id,
+        //         nombre: customer.nombre,
+        //         puntosAcumulados: customer.puntosAcumulados
+        //     },
+        //     cupon: {
+        //         nombre: cupon.nombre,
+        //         descuento: cupon.descuento,
+        //         descripcion: cupon.descripcion
+        //     }
+        // });
 
     } catch (error) {
         res.status(500).json({ message: 'Error al procesar el canje del cupón.', error });
