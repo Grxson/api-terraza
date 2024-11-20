@@ -110,6 +110,7 @@ const profileCustomer = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' })
         }
         const profileData = {
+            id: customer._id,
             nombre: customer.nombre,
             apellidoP: customer.apellidoP,
             apellidoM: customer.apellidoM,
@@ -131,7 +132,7 @@ const profileCustomer = async (req, res) => {
 }
 const canjearCupon = async (req, res) => {
     const { cliente_id, cupon_id } = req.params;
-    
+
     try {
         // Paso 1: Obtener el cliente y verificar si tiene puntos suficientes
         const customer = await Customers.findById(cliente_id); // Buscamos el cliente por ID

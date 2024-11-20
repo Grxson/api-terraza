@@ -11,16 +11,16 @@ const ClienteCuponSchema = new mongoose.Schema({
         ref: 'Cupones',
         require: true
     },
-    status: { 
-        type: String, 
-        require: true, 
-        enum: ['activo'], 
-        default: 'activo' 
+    status: {
+        type: String,
+        require: true,
+        enum: ['activo'],
+        default: 'activo'
     },
-   
-},  {
-        versionKey: false
-    }
+
+}, {
+    versionKey: false
+}
 )
 
 const ClienteCupon = mongoose.model('customer_coupons', ClienteCuponSchema);
