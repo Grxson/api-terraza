@@ -45,7 +45,6 @@ const getAllProducts = async (req, res) => {
     try {
         const products = await Product.find();
         res.json(products);
-        console.log(products)
         
     } catch (error) {
         console.error("Error al obtener productos:", error);
