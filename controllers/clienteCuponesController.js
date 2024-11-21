@@ -27,27 +27,18 @@ const getCuponesDeCliente = async (req, res) => {
         const cuponesIds = clienteCupones.map(cupon => cupon.cupon_id);
 
         // Buscar los detalles de los cupones en la colección Cupones
-        const detallesCupones = await Cupones.find(
+        const cupones = await Cupones.find(
             { _id: { $in: cuponesIds } },
-            'nombre descuento status descripcion costoPuntos'
+            'nombre descuento descripcion costoPuntos'
         );
 
-        // Combinar los detalles de los cupones con los datos de customer_coupons
-        const respuesta = clienteCupones.map(cupon => {
-            const detalles = detallesCupones.find(detalle => detalle._id.toString() === cupon.cupon_id);
-            return {
-                ...cupon.toObject(),
-                detallesCupon: detalles || null,
-            };
-        });
-
-        // Retornar la respuesta con los cupones activos y sus detalles
-        res.status(200).json({ respuesta });
-        console.log(respuesta)
+        // Retornar directamente los detalles de los cupones encontrados
+        res.status(200).json({ cupones });
     } catch (error) {
         console.error('Error al obtener los cupones del cliente:', error);
         res.status(500).json({ message: 'Error al obtener los cupones del cliente.', error });
     }
 };
+
 
 export { getCuponesDeCliente };
