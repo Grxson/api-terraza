@@ -46,6 +46,10 @@ mongoose
 // Servir la carpeta de uploads como estática
 app.use("/uploads", express.static("uploads"));
 
+app.use('/', (req, res) => {
+  res.send('Bienvenido a la Api')
+}) 
+
 // Rutas products
 app.use("/api/products", products);
 // Rutas orders
