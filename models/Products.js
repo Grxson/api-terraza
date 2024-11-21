@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema({
     required: true,
     enum: ["platillo", "bebida", "deProveedor"],
   },
+  valorPuntos: Number,
   descripcion: { type: String, require: true },
   imagen: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
