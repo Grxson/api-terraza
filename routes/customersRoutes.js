@@ -1,6 +1,6 @@
 import express from 'express'
 import Customers from '../models/Customers.js'
-import { registerCustomer, loginCustomer, getCsrfToken, profileCustomer, updateCustomer } from '../controllers/customersController.js';
+import { registerCustomer, loginCustomer, getCsrfToken, profileCustomer, updateCustomer, deleteCustomer } from '../controllers/customersController.js';
 import { csrfProtection } from '../middleware/csrf.js';
 import protegerRuta from '../middleware/protegerRuta.js';
 import upload from '../middleware/multer.js';
@@ -17,6 +17,7 @@ route.post('/login', loginCustomer);
 route.get('/profile', protegerRuta, profileCustomer);
 
 route.put('/update-customer/:id', upload.single('imagen'), updateCustomer);
+route.delete('/delete/:id', deleteCustomer)
 
 
 export default route;

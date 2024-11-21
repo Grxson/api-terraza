@@ -245,7 +245,7 @@ const updateCustomer = async (req, res) => {
             const imageUrl = `${baseUrl}/uploads/${req.file.filename}`; // Construye la URL completa
             customer.imagen = imageUrl; // Guarda la URL en la base de datos
         }
-        // Guardar los cambios
+        // Guardar los cambios  
         await customer.save();
 
         res.status(200).json({ message: 'Datos actualizados correctamente' })
@@ -255,6 +255,30 @@ const updateCustomer = async (req, res) => {
     }
 }
 const deleteCustomer = async (req, res) => {
+    const {id} = req.params;
+    try {
+        const customer = await Customers.findById(id);
+
+    if(!customer){
+        return res.status(404).json({ message: 'Cliente no encontrado.' });
+    }
+    
+    // Eliminar la imagen asociada si existe
+    if (customer.imagen) {
+        const previousImagePath = path.join(__dirname, '..', 'uploads', path.basename(customer.imagen));
+        if (fs.existsSync(previousImagePath)) {
+            fs.unlinkSync(previousImagePath); // Eliminar la imagen del servidor
+        }
+    }
+
+    await ClienteCupon.deleteMany({cliente_id: customer.userIdentifier, status: 'activo'})
+    await Customers.findByIdAndDelete(id)
+     
+    res.status(200).json({ message: 'Cuenta eliminada con éxito.' });
+    } catch (error) {
+        console.error('Error al eliminar la cuenta: ', error)
+        res.status(500).json({message: 'Error al eliminar la cuenta', error: error.message})
+    }
 
 }
 export {
