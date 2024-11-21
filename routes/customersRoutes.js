@@ -3,6 +3,7 @@ import Customers from '../models/Customers.js'
 import { registerCustomer, loginCustomer, getCsrfToken, profileCustomer, updateCustomer } from '../controllers/customersController.js';
 import { csrfProtection } from '../middleware/csrf.js';
 import protegerRuta from '../middleware/protegerRuta.js';
+import upload from '../middleware/multer.js';
 
 const route = express.Router();
 
@@ -15,7 +16,7 @@ route.post('/login', loginCustomer);
 // Proteger la ruta de detalles del perfil
 route.get('/profile', protegerRuta, profileCustomer);
 
-route.put('/update-customer/:id', updateCustomer);
+route.put('/update-customer/:id', upload.single('imagen'), updateCustomer);
 
 
 export default route;

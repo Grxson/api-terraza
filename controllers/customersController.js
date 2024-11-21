@@ -5,6 +5,14 @@ import fs from 'fs'
 import { generarJWT } from "../helpers/tokens.js";
 import ClienteCupon from "../models/ClienteCupon.js";
 import Cupones from "../models/Cupones.js";
+import path from "path";
+
+import { fileURLToPath } from 'url'; // Para convertir la URL en la ruta del archivo
+import { dirname } from 'path'; // Para obtener el nombre del directorio
+
+// Obtener la ruta del directorio actual
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 // Ruta para obtener el token CSRF
 export const getCsrfToken = (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
@@ -54,6 +62,7 @@ const registerCustomer = async (req, res) => {
         correo,
         userIdentifier,
         pass: hashedPassword,
+        imagen: '',
         puntosAcumulados: 0
     })
     console.log(newCustomer)
@@ -115,6 +124,7 @@ const profileCustomer = async (req, res) => {
             apellidoP: customer.apellidoP,
             apellidoM: customer.apellidoM,
             correo: customer.correo,
+            imagen: customer.imagen,
             identificador: customer.userIdentifier,
             puntos: customer.puntosAcumulados
 
@@ -169,7 +179,7 @@ const canjearCupon = async (req, res) => {
         await cupon.save(); // Guardamos el estado actualizado del cupón
 
         // Paso 7: Responder con éxito
-        res.status(200).json({message: 'Cupón Canjeado con éxito'})
+        res.status(200).json({ message: 'Cupón Canjeado con éxito' })
         // res.status(200).json({
         //     message: 'Cupón canjeado con éxito.',
         //     customer: {
@@ -191,7 +201,7 @@ const canjearCupon = async (req, res) => {
 
 
 const updateCustomer = async (req, res) => {
-    const { nombre, apellidoP, apellidoM, correo, pass } = req.body
+    const { nombre, apellidoP, apellidoM, correo, pass, imagen } = req.body
     const { id } = req.params
 
     try {
@@ -217,6 +227,24 @@ const updateCustomer = async (req, res) => {
         if (apellidoP) customer.apellidoP = apellidoP;
         if (apellidoM) customer.apellidoM = apellidoM;
         if (correo) customer.correo = correo;
+        // Manejo de la imagen subida
+
+        console.log(req.file)
+        // Manejo de la imagen subida
+        if (req.file) {
+            // Eliminar la imagen anterior si existe
+            if (customer.imagen) {
+                const previousImagePath = path.join(__dirname, '..', 'uploads', path.basename(customer.imagen));
+                if (fs.existsSync(previousImagePath)) {
+                    fs.unlinkSync(previousImagePath); // Eliminar la imagen anterior
+                }
+            }
+
+            // Guardar la nueva imagen
+            const baseUrl = process.env.BASE_URL || 'http://localhost:5000'; // Asegúrate de configurar BASE_URL en .env
+            const imageUrl = `${baseUrl}/uploads/${req.file.filename}`; // Construye la URL completa
+            customer.imagen = imageUrl; // Guarda la URL en la base de datos
+        }
         // Guardar los cambios
         await customer.save();
 
