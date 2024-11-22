@@ -4,7 +4,6 @@ import Customers from '../models/Customers.js'
 const protegerRuta = async (req, res, next) => {
 
     const { _token } = req.cookies;
-    console.log(_token)
     if (!_token) {
         return res.status(401).json({ message: 'Acceso denegado. Inicia sesión.' });
     }

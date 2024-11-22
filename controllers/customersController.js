@@ -65,7 +65,6 @@ const registerCustomer = async (req, res) => {
         imagen: '',
         puntosAcumulados: 0
     })
-    console.log(newCustomer)
     try {
         await newCustomer.save();
         res.status(201).json({ message: 'Se ha creado tu cuenta con éxito.' });
@@ -97,7 +96,6 @@ const loginCustomer = async (req, res) => {
         }
 
         const token = generarJWT({ id: customer._id, nombre: customer.nombre, userIdentifier: customer.userIdentifier })
-        console.log(token)
 
         res.cookie('_token', token, {
             httpOnly: true,
@@ -131,7 +129,6 @@ const profileCustomer = async (req, res) => {
         }
 
         res.status(200).json({ profileData })
-        console.log(profileData)
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: 'Error al obtener el perfil' })
@@ -229,7 +226,6 @@ const updateCustomer = async (req, res) => {
         if (correo) customer.correo = correo;
         // Manejo de la imagen subida
 
-        console.log(req.file)
         // Manejo de la imagen subida
         if (req.file) {
             // Eliminar la imagen anterior si existe
@@ -255,29 +251,29 @@ const updateCustomer = async (req, res) => {
     }
 }
 const deleteCustomer = async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
         const customer = await Customers.findById(id);
 
-    if(!customer){
-        return res.status(404).json({ message: 'Cliente no encontrado.' });
-    }
-    
-    // Eliminar la imagen asociada si existe
-    if (customer.imagen) {
-        const previousImagePath = path.join(__dirname, '..', 'uploads', path.basename(customer.imagen));
-        if (fs.existsSync(previousImagePath)) {
-            fs.unlinkSync(previousImagePath); // Eliminar la imagen del servidor
+        if (!customer) {
+            return res.status(404).json({ message: 'Cliente no encontrado.' });
         }
-    }
 
-    await ClienteCupon.deleteMany({cliente_id: customer.userIdentifier, status: 'activo'})
-    await Customers.findByIdAndDelete(id)
-     
-    res.status(200).json({ message: 'Cuenta eliminada con éxito.' });
+        // Eliminar la imagen asociada si existe
+        if (customer.imagen) {
+            const previousImagePath = path.join(__dirname, '..', 'uploads', path.basename(customer.imagen));
+            if (fs.existsSync(previousImagePath)) {
+                fs.unlinkSync(previousImagePath); // Eliminar la imagen del servidor
+            }
+        }
+
+        await ClienteCupon.deleteMany({ cliente_id: customer.userIdentifier, status: 'activo' })
+        await Customers.findByIdAndDelete(id)
+
+        res.status(200).json({ message: 'Cuenta eliminada con éxito.' });
     } catch (error) {
         console.error('Error al eliminar la cuenta: ', error)
-        res.status(500).json({message: 'Error al eliminar la cuenta', error: error.message})
+        res.status(500).json({ message: 'Error al eliminar la cuenta', error: error.message })
     }
 
 }

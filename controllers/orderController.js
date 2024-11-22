@@ -42,7 +42,6 @@ const getOrders = async (req, res) => {
     } catch (error) {
         console.error("Error al obtener las ordenes: ", error);
         res.status(500).json({ message: "Error interno del servidor" });
-        console.log(error);
     }
 
 }
@@ -89,7 +88,6 @@ const getOrdersByStatus = async (req, res) => {
         console.error("Error al obtener órdenes por estado:", error);
         res.status(500).json({ message: "Error interno del servidor" });
     }
-    console.log('hola')
 };
 
 
