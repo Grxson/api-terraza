@@ -44,7 +44,7 @@ mongoose
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
 // Servir la carpeta de uploads como estática
-app.use("/uploads", express.static("uploads"));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 console.log('Hola')
 // Rutas products
 app.use("/api/products", products);
@@ -74,4 +74,5 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
+export default app
 
