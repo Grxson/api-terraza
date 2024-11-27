@@ -86,13 +86,13 @@ const loginCustomer = async (req, res) => {
         // Buscar el cliente en la base de datos
         const customer = await Customers.findOne({ correo });
         if (!customer) {
-            return res.status(400).json({ message: 'Credenciales inválidas.' });
+            return res.status(400).json({ message: 'Correo o contraseña inválido.' });
         }
 
         // Comparar la contraseña proporcionada con la almacenada en la base de datos
         const passwordMatch = await bcrypt.compare(pass, customer.pass);
         if (!passwordMatch) {
-            return res.status(400).json({ message: 'Credenciales inválidas.' });
+            return res.status(400).json({ message: 'Correo o contraseña inválido.' });
         }
 
         const token = generarJWT({ id: customer._id, nombre: customer.nombre, userIdentifier: customer.userIdentifier })
