@@ -14,7 +14,7 @@ route.post('/register', registerCustomer)
 route.post('/login', loginCustomer);
 
 // Proteger la ruta de detalles del perfil
-route.get('/profile', protegerRuta, profileCustomer);
+route.get('/profile', profileCustomer);
 
 route.put('/update-customer/:id', upload.single('imagen'), updateCustomer);
 route.delete('/delete/:id', deleteCustomer)

@@ -33,7 +33,7 @@ app.use(cookieParser())
 
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://api-terraza-o2w69iv0z-gaels-projects-352c8008.vercel.app/'], // Permitir solo solicitudes desde este origen
+  origin: ['http://localhost:3000', 'https://api-terraza-o2w69iv0z-gaels-projects-352c8008.vercel.app/', ['https://api-terraza.vercel.app/']], // Permitir solo solicitudes desde este origen
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   credentials: true
 }));
@@ -68,9 +68,16 @@ app.use('/api/coupons', cuponesRoutes)
 
 
 
+<<<<<<< HEAD
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
+=======
+// const PORT = process.env.PORT || 5000;
+//  app.listen(PORT, () => {
+//    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+//  });
+>>>>>>> ee4b118051d9f60e7f02d10f4335199343b53ce8
 
