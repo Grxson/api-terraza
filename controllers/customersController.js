@@ -237,7 +237,7 @@ const updateCustomer = async (req, res) => {
             }
 
             // Guardar la nueva imagen
-            const baseUrl = process.env.BASE_URL || 'https://api-terraza.vercel.app'; // Asegúrate de configurar BASE_URL en .env
+            const baseUrl = process.env.BASE_URL || 'http://localhost:5000'; // Asegúrate de configurar BASE_URL en .env
             const imageUrl = `${baseUrl}/uploads/${req.file.filename}`; // Construye la URL completa
             customer.imagen = imageUrl; // Guarda la URL en la base de datos
         }

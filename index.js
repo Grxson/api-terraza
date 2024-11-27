@@ -33,7 +33,7 @@ app.use(cookieParser())
 
 
 app.use(cors({
-  origin: ['http://localhost:3000'], // Permitir solo solicitudes desde este origen
+  origin: ['http://localhost:3000', 'https://api-terraza-o2w69iv0z-gaels-projects-352c8008.vercel.app/'], // Permitir solo solicitudes desde este origen
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   credentials: true
 }));
@@ -44,7 +44,7 @@ mongoose
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
 // Servir la carpeta de uploads como estática
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use("/uploads", express.static("uploads"));
 console.log('Hola')
 // Rutas products
 app.use("/api/products", products);
@@ -68,11 +68,9 @@ app.use('/api/coupons', cuponesRoutes)
 
 
 
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
-export default app
 
